@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/v5.3.7/pixi.js"></script>
+</head>
+<style>
+</style>
+
+<body>
+    <script>
+        // 创建一个应用
+        let app = new PIXI.Application({
+            width: 256,           // default: 800 宽度
+            height: 256,          // default: 600 高度
+            antialias: true,      // default: false 反锯齿
+            transparent: false,   //default: false 透明度
+            resolution: 1         // default: 1 分辨率
+        });
+        document.body.appendChild(app.view);
+        PIXI.Loader.shared
+            .add("images/cat.png")
+            .load(setup);
+        function setup() {
+            var cat = new PIXI.Sprite( PIXI.Loader.shared.resources["images/cat.png"].texture);
+            app.stage.addChild(cat);//把它添加到PIXI的stage中
+            // cat.visible=false
+        }
+      
+        app.renderer.view.style.border = "1px dashed black";
+        app.renderer.resize(512, 512);
+        app.renderer.backgroundColor = 0x061639;
+    </script>
+</body>
+
+</html>
