@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/v5.3.7/pixi.js"></script>
+</head>
+<style>
+</style>
+
+<body>
+    <script>
+        // 别名
+        let Application = PIXI.Application,
+            loader = PIXI.Loader.shared,
+            resources = PIXI.Loader.shared.resources,
+            TextureCache = PIXI.utils.TextureCache,
+            Rectangle= PIXI.Rectangle;
+            Sprite = PIXI.Sprite;
+
+        // 创建一个应用
+        let app = new Application({
+            width: 512,           // default: 800 宽度
+            height: 512,          // default: 600 高度
+            antialias: true,      // default: false 反锯齿
+            transparent: false,   //default: false 透明度
+            resolution: 1         // default: 1 分辨率
+        });
+        document.body.appendChild(app.view);
+        loader
+            .add(["images/dungeon.png"])
+            .add("images/treasureHunter.json")
+            .load(setup);
+        function setup() {
+            let dungeon, explorer, treasure, door, id;
+            // 方法一
+            let dungeonTexture = TextureCache["images/dungeon.png"];
+                dungeon = new Sprite(dungeonTexture);
+            app.stage.addChild(dungeon);//把它添加到PIXI的stage中
+
+            //方法二
+            explorer = new Sprite(
+               resources["images/treasureHunter.json"].textures["explorer.png"]
+            )
+            explorer.x=68;
+            explorer.y = app.stage.height / 2 - explorer.height / 2;
+            app.stage.addChild(explorer);
+
+            // 方法三
+            id = resources["images/treasureHunter.json"].textures;
+            treasure = new Sprite(id["treasure.png"]);
+            app.stage.addChild(treasure) 
+
+            treasure.x = app.stage.width - treasure.width - 48;
+            treasure.y = app.stage.height / 2 - treasure.height / 2;
+            app.stage.addChild(treasure);
+
+            // 创建一个门
+            door = new Sprite(id["door.png"])
+            door.position.set(32,0)
+            app.stage.addChild(door) 
+        }
+      
+        app.renderer.view.style.border = "1px dashed black";
+        // app.renderer.resize(512, 512);
+        app.renderer.backgroundColor = 0x061639;
+    </script>
+</body>
+
+</html>
