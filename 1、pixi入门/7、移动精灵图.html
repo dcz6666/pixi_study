@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/v5.3.7/pixi.js"></script>
+</head>
+<style>
+</style>
+
+<body>
+    <script>
+        // 别名
+        let Application = PIXI.Application,
+            loader = PIXI.Loader.shared,
+            resources = PIXI.Loader.shared.resources,
+            Sprite = PIXI.Sprite;
+
+        // 创建一个应用
+        let app = new Application({
+            width: 256,           // default: 800 宽度
+            height: 256,          // default: 600 高度
+            antialias: true,      // default: false 反锯齿
+            transparent: false,   //default: false 透明度
+            resolution: 1         // default: 1 分辨率
+        });
+        document.body.appendChild(app.view);
+        let cat;
+        loader
+            .add(["images/cat.png"])
+            .load(setup);
+        function setup() {
+            cat = new Sprite(resources["images/cat.png"].texture);
+
+            cat.vx = 0;
+            cat.vy = 0;
+            app.ticker.add(delta => gameLoop(delta));
+ 
+            app.stage.addChild(cat);//把它添加到PIXI的stage中
+        }
+        function gameLoop(delta){
+            console.log("delta",delta);
+            // cat.y+= 1;
+            cat.vx = 1;
+            cat.vy = 1;
+
+            cat.x += cat.vx;
+            cat.y += cat.vy;
+        }
+      
+        app.renderer.view.style.border = "1px dashed black";
+        app.renderer.resize(512, 512);
+        app.renderer.backgroundColor = 0x061639;
+    </script>
+</body>
+
+</html>

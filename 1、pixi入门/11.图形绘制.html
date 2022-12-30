@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/v5.3.7/pixi.js"></script>
+</head>
+<style>
+</style>
+
+<body>
+    <script>
+        // 别名
+        let Application = PIXI.Application,
+            loader = PIXI.Loader.shared,
+            resources = PIXI.Loader.shared.resources,
+            TextureCache = PIXI.utils.TextureCache,
+            Rectangle = PIXI.Rectangle,
+            animals = new PIXI.Container(),
+            Graphics=PIXI.Graphics,
+            TextStyle=PIXI.TextStyle,
+            Text = PIXI.Text,
+            Sprite = PIXI.Sprite;
+          
+
+        // 创建一个应用
+        let app = new Application({
+            width: 512,           // default: 800 宽度
+            height: 512,          // default: 600 高度
+            antialias: true,      // default: false 反锯齿
+            transparent: false,   //default: false 透明度
+            resolution: 1         // default: 1 分辨率
+        });
+
+        document.body.appendChild(app.view);
+        let rectangle = new Graphics();
+        rectangle.beginFill(0x66CCFF);
+        rectangle.lineStyle(4, 0xFF3300, 1);
+        rectangle.drawRect(0, 0, 100, 100);
+        rectangle.endFill();
+        rectangle.x = 170;
+        rectangle.y = 170;
+        app.stage.addChild(rectangle);
+
+        let circle = new Graphics();
+        circle.beginFill(0x9966FF);
+        circle.drawCircle(0, 0, 32);
+        circle.endFill();
+        circle.x = 64;
+        circle.y = 130;
+        app.stage.addChild(circle);
+
+        let ellipse = new Graphics();
+            ellipse.beginFill(0xFFFF00);
+            ellipse.drawEllipse(0, 0, 50, 20);
+            ellipse.endFill();
+            ellipse.x = 180;
+            ellipse.y = 130;
+            app.stage.addChild(ellipse);
+
+
+            let roundBox = new Graphics();
+            roundBox.lineStyle(4, 0x99CCFF, 1);
+            roundBox.beginFill(0xFF9933);
+            roundBox.drawRoundedRect(0, 0, 84, 36, 10)
+            roundBox.endFill();
+            roundBox.x = 48;
+            roundBox.y = 190;
+            app.stage.addChild(roundBox);
+
+            let line = new Graphics();
+            line.lineStyle(4, 0xFFFFFF, 1);
+            line.moveTo(0, 0);
+            line.lineTo(80, 50);
+            line.x = 32;
+            line.y = 32;
+            app.stage.addChild(line);
+
+
+            let triangle = new Graphics();
+            triangle.beginFill(0x66FF33);
+            triangle.drawPolygon([
+                -32, 64,             //First point
+                32, 64,              //Second point
+                0, 0                 //Third point
+            ]);
+            triangle.endFill();
+            triangle.x = 180;
+            triangle.y = 22;
+            app.stage.addChild(triangle);
+
+
+            // let message = new Text("Hello Pixi!");
+            // message.position.set(54, 96);
+            // app.stage.addChild(message);
+
+            let style = new TextStyle({
+                fontFamily: "Arial",
+                fontSize: 36,
+                fill: "white",
+                stroke: '#ff3300',
+                strokeThickness: 4,
+                dropShadow: true,
+                dropShadowColor: "#000000",
+                dropShadowBlur: 4,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowDistance: 6,
+                });
+            let message = new Text("Hello Pixi!", style);
+            app.stage.addChild(message);
+
+        app.renderer.view.style.border = "1px dashed black";
+        app.renderer.resize(512, 512);
+        app.renderer.backgroundColor = 0x061639;
+    </script>
+</body>
+
+</html>

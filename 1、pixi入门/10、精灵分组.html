@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/v5.3.7/pixi.js"></script>
+</head>
+<style>
+</style>
+
+<body>
+    <script>
+        // 别名
+        let Application = PIXI.Application,
+            loader = PIXI.Loader.shared,
+            resources = PIXI.Loader.shared.resources,
+            TextureCache = PIXI.utils.TextureCache,
+            Rectangle = PIXI.Rectangle,
+            animals = new PIXI.Container();
+            Sprite = PIXI.Sprite;
+
+        // 创建一个应用
+        let app = new Application({
+            width: 512,           // default: 800 宽度
+            height: 512,          // default: 600 高度
+            antialias: true,      // default: false 反锯齿
+            transparent: false,   //default: false 透明度
+            resolution: 1         // default: 1 分辨率
+        });
+        document.body.appendChild(app.view);
+        loader
+            .add(["images/animals.png"])
+            .add("images/animals.json")
+            .load(setup);
+        function setup() {
+
+            let id = resources["images/animals.json"].textures;
+            let cat = new Sprite(id["cat.png"]);
+            cat.position.set(16, 16);
+
+            let hedgehog = new Sprite(id["hedgehog.png"]);
+            hedgehog.position.set(32, 32);
+
+            let tiger = new Sprite(id["tiger.png"]);
+            tiger.position.set(64, 64);
+
+            animals.addChild(cat);
+            animals.addChild(hedgehog);
+            animals.addChild(tiger);
+
+            animals.position.set(64, 64);
+            // console.log(animals.children)
+            // console.log(animals.width);
+
+            //animals分组中猫的全局坐标。
+            // console.log(animals.toGlobal(cat.position));
+
+            // 获取猫的全局坐标。
+            // cat.parent.toGlobal(cat.position);
+
+            // 计算全局坐标!这会是最好的一种方法
+        //    let x= tiger.getGlobalPosition().x
+        //     let y= tiger.getGlobalPosition().y
+        //     console.log("x",x,y)
+
+            app.stage.addChild(animals);
+        }
+
+        app.renderer.view.style.border = "1px dashed black";
+        app.renderer.resize(512, 512);
+        app.renderer.backgroundColor = 0x061639;
+    </script>
+</body>
+
+</html>

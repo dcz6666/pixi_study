@@ -62,6 +62,21 @@
             door = new Sprite(id["door.png"])
             door.position.set(32,0)
             app.stage.addChild(door) 
+
+
+            //创建blobs
+            const numberOfBlobs = 6, spacing = 48, xOffset = 150;
+            for(let i=0;i<numberOfBlobs;i++){
+                const blob = new Sprite(id["blob.png"]);
+                const x = spacing * i + xOffset;
+                const y = randomInt(0, app.stage.height - blob.height);
+                blob.x = x;
+                blob.y = y;
+                app.stage.addChild(blob);
+            }
+        }
+        function randomInt(min, max) {
+             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
       
         app.renderer.view.style.border = "1px dashed black";
