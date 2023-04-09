@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- pixi 版本7.1.1 才会有滤镜功能 -->
+    <script src="https://pixijs.download/v7.1.1/pixi.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pixi-filters@latest/dist/pixi-filters.js"></script>
+  </head>
+  <style></style>
+
+  <body>
+    <script>
+      let {ShockwaveFilter} = PIXI.filters
+      // 别名
+      let Application = PIXI.Application,
+        Rectangle = PIXI.Rectangle,
+        container = new PIXI.Container();
+      // 创建一个应用
+      let app = new Application({
+        width: window.innerWidth, // default: 800 宽度
+        height: window.innerHeight, // default: 600 高度
+        antialias: true, // default: false 反锯齿
+        transparent: false, //default: false 透明度
+        resolution: window.devicePixelRatio || 1, // default: 1 分辨率
+      });
+      document.body.appendChild(app.view);
+
+      // 创建一个纹理
+      let texture = PIXI.Texture.from("images/textures/car.jpg");
+      //创建一个精灵
+      let sprite = new PIXI.Sprite(texture);
+      sprite.width = app.screen.width;
+      sprite.height = app.screen.height;
+
+      //创建一个容器
+      container.addChild(sprite);
+      app.stage.addChild(container); //把它添加到PIXI的stage中
+
+      //添加文字
+      const text = new PIXI.Text("Hello PIXIJS", {
+        fontFamily: "Arial",
+        fontSize: 30 + Math.floor(app.screen.width * 0.1),
+        fill: 0xffffff,
+        algin: "center",
+        dropShadow: true,
+        dropShadowColor: "#000000",
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 2,
+        dropShadowDistance: 2,
+      });
+
+      text.x = app.screen.width / 2;
+      text.y = app.screen.height / 2;
+      text.anchor.set(0.5);
+      container.addChild(text);
+
+      // 添加置换滤镜
+      // 加载纹理
+      let displacementSprite = PIXI.Sprite.from(
+        "images/textures/displacement.jpg"
+      );
+
+      displacementSprite.scale.set(1);
+      //纹理平铺并且允许重复
+      displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+      // 创建纹理滤镜
+      const displacementFilter = new PIXI.DisplacementFilter(
+        displacementSprite
+      );
+
+      container.addChild(displacementSprite);
+
+      //添加震波滤镜
+      const shockwaveFilter1 = new ShockwaveFilter(
+        [Math.random() * app.screen.width, Math.random() * app.screen.height],
+        {
+          radius: 160, // 半径
+          wavelength: 65, // 波长
+          amplitude: 105, // 振幅
+          speed: 200, // 速度
+        }
+      );
+
+    //   const shockwaveFilter2 = new ShockwaveFilter(
+    //     [Math.random() * app.screen.width, Math.random() * app.screen.height],
+    //     {
+    //       radius: 100, // 半径
+    //       wavelength: 50, // 波长
+    //       amplitude: 80, // 振幅
+    //       speed: 300, // 速度
+    //     }
+    //   );
+
+    //   const shockwaveFilter3 = new ShockwaveFilter(
+    //     [Math.random() * app.screen.width, Math.random() * app.screen.height],
+    //     {
+    //       radius: 90, // 半径
+    //       wavelength: 50, // 波长
+    //       amplitude: 100, // 振幅
+    //       speed: 250, // 速度
+    //     }
+    //   );
+      // 将滤镜添加到容器内
+      container.filters = [
+        displacementFilter,
+        // shockwaveFilter1,
+        // shockwaveFilter2,
+        // shockwaveFilter3,
+      ];
+      // 添加动态效果
+      app.ticker.add((delte) => {
+        displacementSprite.x += 1;
+        displacementSprite.y += 1;
+        // createWave(shockwaveFilter1, 1);
+        // createWave(shockwaveFilter2, 1.2);
+        // createWave(shockwaveFilter3, 0.7);
+      });
+
+      function createWave(waveFilter, resetTime) {
+        waveFilter.time += 0.01;
+        if (waveFilter.time > resetTime) {
+          waveFilter.time = 0;
+          waveFilter.center = [
+            Math.random() * app.screen.width,
+            Math.random() * app.screen.height,
+          ];
+        }
+      }
+    </script>
+  </body>
+</html>
