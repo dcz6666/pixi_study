@@ -23,6 +23,7 @@ PIXI.loader
     .add(p5Arr)
     .on("progress", function (loader, resource) {
         // console.log("loader.progress", loader.progress)
+        $('#loadingProgress').html(Math.floor(loader.progress)+'%');
     })
     .load(setup);
 
@@ -32,6 +33,13 @@ let allTimeLine = new TimelineMax({ paused: true });
 let app = null;
 //setup 函数
 function setup() {
+    $('#loadingProgress').hide()
+    setTimeout(()=>{
+        $('#tip').fadeIn('slow')
+        setTimeout(()=>{
+            $("#tip").addClass('upTip')
+        },1500)
+    },1000)
     app = new PIXI.Application({
         width: 750,
         height: 1488,
@@ -82,11 +90,10 @@ function setup() {
     spritesObject.push(...sence3Object);
     spritesObject.push(...sence4Object);
     spritesObject.push(...spriteGroupLastObject);
-    console.log("spritesObject", spritesObject);
+    // console.log("spritesObject", spritesObject);
 
     for (let key of Object.keys(spritesObject)) {
         let temp = spritesObject[key];
-        console.log("temp", temp);
         addSprToGroup(
             temp.img,
             temp.x,
@@ -99,6 +106,9 @@ function setup() {
     // 各种滑动和动画
     touchAction();
     tweenAciton();
+    $('#loading').on('touchstart',function(){
+        $('#loading').hide()
+    })
 }
 //创建精灵组 加载精灵
 function addSprToGroup(img, x, y, alpha, sprName, sprGroup) {
@@ -136,6 +146,7 @@ function touchAction() {
                 console.log("progress", value, progress);
                 allTimeLine.seek(progress);
                 animationPlay(progress);
+                audioAction(progress)
             }
         },
     });
@@ -216,6 +227,15 @@ function tweenAciton() {
    let bwTween = TweenMax.to(boyworking,bwDuringTime,{alpha:1});
    bwTimeline.add(bwTween,0)
    allTimeLine.add(bwTimeline,0)
+
+   //旋涡显示
+   let xn = app.stage.getChildByName("spriteGroupLast").getChildByName("bgLast");
+   let xnStartTime = -6613/maxLong;
+   let xnDuringTime= -50/maxLong
+   let xnTimeline  = new TimelineMax({delay:xnStartTime})
+   let xnTween = TweenMax.to(xn,xnDuringTime,{alpha:1});
+   xnTimeline.add(xnTween,0)
+   allTimeLine.add(xnTimeline,0)
 }
 
 // animationPlay 参数progress
@@ -228,10 +248,101 @@ function animationPlay(progress) {
         let childNum = p2Arr2.length;
         let childIndex = Math.floor((progress-childStepStartTime)/childDuringTime*childNum);
         console.log("childIndex",childIndex);
-        if(childIndex<childNum){
+        if((childIndex<childNum)&&(childIndex>=0)){
             app.stage.getChildByName("spriteGroupSences").getChildByName("sence2").getChildByName("p2Child").texture= new PIXI.Texture.fromImage(p2Arr2[childIndex])
         }
     }
 
 
+    //旋涡 并出现扣题文字 spriteGroupLast/bgLast
+    let xunStartTime= -6613/maxLong;
+    let xunDuringTime = -1000/maxLong;
+    if(progress>=xunStartTime){
+        let xunNum = p5Arr.length;
+        let xunIndex=  Math.floor((progress-xunStartTime)/xunDuringTime*xunNum);
+        if((xunIndex<xunNum)&&(xunIndex>=0)){
+            app.stage.getChildByName("spriteGroupLast").getChildByName("bgLast").texture= new PIXI.Texture.fromImage(p5Arr[xunIndex])
+        }
+    }
+
+    let ewmStartTime = -7600/maxLong;
+    if(progress>=ewmStartTime){
+        $('.ewm').show()
+    }else{
+        $('.ewm').hide()
+    }
 }
+
+
+// 播放声音 
+function audioAction(progress){
+    let timeDur= 20;
+    let auStarStartTime = -40 / maxLong;
+    let auStarEndTime = -(40+timeDur) / maxLong;
+
+    if((progress>=auStarStartTime) && (progress<=auStarEndTime)){
+        audioPlay('ding')
+    }
+    if(progress<auStarStartTime){
+        audioPause('ding')
+    }
+
+    //欢呼
+    let auHuanhuStartTime = -2270 / maxLong;
+    let auHuanhuEndTime = -(2270+timeDur) / maxLong;
+    if((progress>=auHuanhuStartTime) && (progress<=auHuanhuEndTime)){
+        audioPlay('huanhu')
+    }
+    if(progress<=auHuanhuStartTime){
+        audioPause('huanhu')
+    }
+}
+
+
+//音频加载
+
+function audioPlay(musicId){
+    let mus =document.getElementById(musicId)
+    mus.play()
+    document.addEventListener('WeixinJSBridgeReady',function(){
+    mus.play()
+    },false)
+  }
+
+  function audioPause(musicId){
+    let au=document.getElementById(musicId)
+    au.pause()
+    document.addEventListener('WeixinJSBridgeReady',function(){
+      au.pause()
+    },false)
+  }
+
+//背景音乐默认播放
+audioPlay('bgmusic')
+let audioFlag = true;
+function musicAction(){
+    if(audioFlag){
+        audioPause('bgmusic')
+        audioFlag=false
+        $('#musicIcon').removeClass('mplay').addClass('mpause')
+    }else{
+        audioPlay('bgmusic')
+        audioFlag=true
+        $('#musicIcon').removeClass('mpause').addClass('mplay')
+    }
+}
+document.getElementById('musicIcon').onclick=function(){
+    musicAction()
+}
+
+
+//预加载其他声音文件
+audioPlay('ding')
+setTimeout(function(){
+    audioPause('ding')
+},200)
+
+audioPlay('huanhu')
+setTimeout(function(){
+    audioPause('huanhu')
+},200)
